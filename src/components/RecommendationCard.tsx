@@ -6,9 +6,10 @@ interface RecommendationCardProps {
 
 function RecommendationCard({ recommendation }: RecommendationCardProps) {
   const isActionRequired = recommendation.requires_decision;
+  const urgencyLevel = isActionRequired ? 'high' : recommendation.autonomous ? 'low' : 'medium';
 
   return (
-    <div className={`briefing-card ${isActionRequired ? 'border-yellow-300 bg-yellow-50' : ''}`}>
+    <div className={`briefing-card ${isActionRequired ? 'border-yellow-300 bg-yellow-50' : 'border-green-200 bg-green-50'}`}>
       <div className="flex items-start gap-3">
         <div className={`mt-1 ${isActionRequired ? 'text-yellow-500' : 'text-green-500'}`}>
           {isActionRequired ? (
@@ -22,24 +23,54 @@ function RecommendationCard({ recommendation }: RecommendationCardProps) {
           )}
         </div>
         <div className="flex-1">
-          <h3 className={`briefing-header ${isActionRequired ? 'text-yellow-700' : ''}`}>
-            {isActionRequired ? 'Action Required' : 'Recommended Next Step'}
-          </h3>
-          <p className="mt-1 text-briefing-secondary">{recommendation.action}</p>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className={`briefing-header ${isActionRequired ? 'text-yellow-700' : 'text-green-700'}`}>
+              {isActionRequired ? 'Action Required' : 'Recommended Next Step'}
+            </h3>
+            <span className={`px-2 py-0.5 rounded text-xs ${
+              urgencyLevel === 'high' ? 'bg-red-100 text-red-700' :
+              'bg-green-100 text-green-700'
+            }`}>
+              {urgencyLevel === 'high' ? 'Urgent' : 'Normal'}
+            </span>
+          </div>
+          
+          <p className="mt-1 text-briefing-secondary font-medium">{recommendation.action}</p>
+          
           {recommendation.reason && (
-            <p className="mt-2 text-sm text-briefing-muted">{recommendation.reason}</p>
-          )}
-          {recommendation.decision_options && (
-            <div className="mt-3 flex gap-2">
-              {recommendation.decision_options.map(opt => (
-                <span key={opt} className="px-2 py-1 bg-white rounded border text-sm">
-                  {opt}
-                </span>
-              ))}
+            <div className="mt-2">
+              <p className="text-xs text-briefing-muted mb-1">Why:</p>
+              <p className="text-sm text-briefing-secondary bg-white p-2 rounded">{recommendation.reason}</p>
             </div>
           )}
-          <div className="mt-3 text-xs text-briefing-muted">
-            {recommendation.autonomous ? 'Can proceed autonomously' : 'Requires human input'}
+          
+          {recommendation.decision_options && (
+            <div className="mt-3">
+              <p className="text-xs text-briefing-muted mb-2">Options:</p>
+              <div className="flex flex-wrap gap-2">
+                {recommendation.decision_options.map(opt => (
+                  <button key={opt} className="px-3 py-1 bg-white rounded border hover:bg-briefing-accent hover:text-white transition-colors text-sm">
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="mt-3 pt-2 border-t border-gray-200">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs ${
+                recommendation.autonomous ? 'text-green-600' : 'text-yellow-600'
+              }`}>
+                {recommendation.autonomous ? '● Can proceed autonomously' : '● Requires human input'}
+              </span>
+            </div>
+            
+            {!recommendation.autonomous && (
+              <p className="text-xs text-briefing-muted mt-1">
+                Reply via email or CLI: asyncdev email-decision reply
+              </p>
+            )}
           </div>
         </div>
       </div>

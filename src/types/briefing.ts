@@ -234,4 +234,44 @@ export type {
   Briefing,
 };
 
-export { deriveBriefing };
+type ChangeEventType = 'feature_complete' | 'execution_success' | 'execution_failed' | 'blocker_added' | 'blocker_resolved' | 'decision_requested' | 'decision_resolved' | 'phase_change';
+
+interface ChangeEvent {
+  id: string;
+  type: ChangeEventType;
+  description: string;
+  timestamp: string;
+  feature_id?: string;
+  execution_id?: string;
+  evidence_path?: string;
+}
+
+function deriveChangeEvent(executionResult: ExecutionResult): ChangeEvent[] {
+  const events: ChangeEvent[] = [];
+  
+  for (const item of executionResult.completed_items || []) {
+    events.push({
+      id: `${executionResult.execution_id}-${item}`,
+      type: executionResult.status === 'success' ? 'execution_success' : 'execution_failed',
+      description: item,
+      timestamp: executionResult.duration || '',
+      execution_id: executionResult.execution_id,
+    });
+  }
+  
+  return events;
+}
+
+function deriveChangeHistory(executionResults: ExecutionResult[]): ChangeEvent[] {
+  const allEvents: ChangeEvent[] = [];
+  
+  for (const result of executionResults) {
+    allEvents.push(...deriveChangeEvent(result));
+  }
+  
+  return allEvents.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+}
+
+export type { ChangeEventType, ChangeEvent };
+
+export { deriveBriefing, deriveChangeHistory };

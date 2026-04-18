@@ -1,4 +1,5 @@
 import type { Risk } from '../types/briefing';
+import { RiskLevelBadge } from './RiskLevelBadge';
 
 interface BlockerAlertProps {
   risks: Risk[];
@@ -9,6 +10,8 @@ function BlockerAlert({ risks }: BlockerAlertProps) {
 
   const blockers = risks.filter(r => r.source === 'blocked_item');
   const issues = risks.filter(r => r.source === 'issue_found');
+  const highRisks = risks.filter(r => r.level === 'high');
+  const mediumRisks = risks.filter(r => r.level === 'medium');
 
   return (
     <div className="briefing-card border-red-200 bg-red-50">
@@ -19,30 +22,50 @@ function BlockerAlert({ risks }: BlockerAlertProps) {
           </svg>
         </div>
         <div className="flex-1">
-          <h3 className="briefing-header text-red-700">Risks & Blockers</h3>
+          <div className="flex items-center gap-2 mb-3">
+            <h3 className="briefing-header text-red-700">Risks & Blockers</h3>
+            <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-xs">
+              {risks.length} total
+            </span>
+          </div>
           
-          {blockers.length > 0 && (
-            <div className="mt-3 space-y-2">
-              {blockers.map((blocker, i) => (
-                <div key={i} className="bg-white p-2 rounded border border-red-100">
-                  <p className="text-sm font-medium text-red-700">{blocker.item}</p>
-                  <p className="text-xs text-red-600">{blocker.reason}</p>
-                </div>
-              ))}
+          {highRisks.length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs text-briefing-muted mb-2 font-medium">Critical (requires immediate attention):</p>
+              <div className="space-y-2">
+                {highRisks.map((risk, i) => (
+                  <div key={i} className="bg-white p-3 rounded border border-red-200">
+                    <div className="flex items-center gap-2 mb-1">
+                      <RiskLevelBadge level={risk.level} />
+                      <span className="text-xs text-briefing-muted">{risk.source === 'blocked_item' ? 'Blocker' : 'Issue'}</span>
+                    </div>
+                    <p className="text-sm font-medium text-red-700">{risk.item}</p>
+                    <p className="text-xs text-red-600 mt-1">{risk.reason}</p>
+                    <p className="text-xs text-briefing-muted mt-2 italic">
+                      Suggestion: Review this item before continuing execution
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           
-          {issues.length > 0 && (
-            <div className="mt-3">
-              <p className="text-xs text-briefing-muted mb-2">Recent Issues:</p>
+          {mediumRisks.length > 0 && (
+            <div>
+              <p className="text-xs text-briefing-muted mb-2 font-medium">Warnings (monitor):</p>
               <ul className="space-y-1">
-                {issues.slice(0, 3).map((issue, i) => (
-                  <li key={i} className="text-sm text-briefing-secondary">
-                    • {issue.item}
+                {mediumRisks.slice(0, 3).map((risk, i) => (
+                  <li key={i} className="flex items-center gap-2 p-2 bg-white rounded">
+                    <RiskLevelBadge level={risk.level} />
+                    <span className="text-sm text-briefing-secondary">{risk.item}</span>
                   </li>
                 ))}
               </ul>
             </div>
+          )}
+          
+          {blockers.length === 0 && issues.length === 0 && (
+            <p className="text-sm text-briefing-muted">No active blockers or issues</p>
           )}
         </div>
       </div>
