@@ -1,7 +1,7 @@
 # Feature 007 — Evidence Panel
 
 ## Status
-`pending`
+`complete`
 
 ## Objective
 Create drill-down surface linking briefing to underlying artifacts.

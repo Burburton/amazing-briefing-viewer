@@ -1,7 +1,7 @@
 # Feature 005 — Briefing Data Model
 
 ## Status
-`pending`
+`complete`
 
 ## Objective
 Define TypeScript data model for briefing surfaces.

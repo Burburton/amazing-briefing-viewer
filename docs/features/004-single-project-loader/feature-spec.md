@@ -1,7 +1,7 @@
 # Feature 004 — Single-Project Loader
 
 ## Status
-`pending`
+`complete`
 
 ## Objective
 Implement artifact loading from product repo and async-dev repo.
