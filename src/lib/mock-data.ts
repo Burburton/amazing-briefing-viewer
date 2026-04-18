@@ -68,7 +68,62 @@ const mockExecutionResults: ExecutionResult[] = [
   },
 ];
 
-const mockDecisionRequests: DecisionRequest[] = [];
+const mockDecisionRequests: DecisionRequest[] = [
+  {
+    decision_request_id: 'dr-20260418-001',
+    question: 'Phase 0 + Phase 1 of amazing-briefing-viewer completed. Are you satisfied with V1 and should I continue to Phase 2?',
+    options: [
+      { id: 'A', label: 'Continue to Phase 2', description: 'What Changed Timeline, Recommendation Quality' },
+      { id: 'B', label: 'Pause - verify V1', description: 'Run npm run dev first' },
+      { id: 'C', label: 'Revise', description: 'Something needs adjustment' },
+      { id: 'D', label: 'Stop', description: 'Review before proceeding' },
+    ],
+    recommendation: 'A',
+    status: 'resolved',
+    resolution: 'DECISION B',
+    sent_at: '2026-04-18T11:30:00Z',
+    email_sent_mock_path: '.runtime/email-outbox/dr-20260418-001.md',
+  },
+  {
+    decision_request_id: 'dr-20260418-002',
+    question: 'V1 verification passed. Ready to proceed with Phase 2?',
+    options: [
+      { id: 'A', label: 'Proceed with Phase 2', description: 'Continue development' },
+      { id: 'B', label: 'Manually verify', description: 'Check UI in browser' },
+      { id: 'C', label: 'Make changes', description: 'Adjust V1' },
+      { id: 'D', label: 'Stop', description: 'Discuss direction' },
+    ],
+    recommendation: 'A',
+    status: 'resolved',
+    resolution: 'DECISION A',
+    sent_at: '2026-04-18T11:40:00Z',
+  },
+  {
+    decision_request_id: 'dr-20260418-003',
+    question: 'Phase 2 UI verification passed. What should we do next?',
+    options: [
+      { id: 'A', label: 'Continue to Phase 3', description: 'Email Decision Integration' },
+      { id: 'B', label: 'Pause', description: 'See more features' },
+      { id: 'C', label: 'Adjust Phase 2', description: 'Make changes' },
+      { id: 'D', label: 'Stop', description: 'Review before continuing' },
+    ],
+    recommendation: 'A',
+    status: 'resolved',
+    resolution: 'DECISION A',
+    sent_at: '2026-04-18T12:20:00Z',
+  },
+  {
+    decision_request_id: 'dr-20260418-004',
+    question: 'Phase 2 complete. Ready for Phase 3?',
+    options: [
+      { id: 'A', label: 'Start Phase 3', description: 'Decision Email Trace' },
+      { id: 'B', label: 'Pause', description: 'Review first' },
+    ],
+    recommendation: 'A',
+    status: 'pending',
+    sent_at: '2026-04-18T12:20:00Z',
+  },
+];
 
 function getMockArtifacts(): LoadedArtifacts {
   return {
@@ -80,6 +135,7 @@ function getMockArtifacts(): LoadedArtifacts {
     artifacts: [
       { type: 'product_brief', path: '/docs/product-north-star.md', source: 'product', loaded: true },
       { type: 'runstate', path: '/projects/amazing-briefing-viewer/runstate.md', source: 'orchestration', loaded: true },
+      { type: 'decision_request', path: '/projects/amazing-briefing-viewer/.runtime/decision-requests/dr-20260418-001.md', source: 'orchestration', loaded: true },
     ],
     errors: [],
   };
