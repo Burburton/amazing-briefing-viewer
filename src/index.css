@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-briefing bg-briefing-surface text-briefing-secondary;
+  }
+}
+
+@layer components {
+  .briefing-card {
+    @apply bg-white rounded-lg border border-briefing-border p-4 shadow-sm;
+  }
+  
+  .briefing-header {
+    @apply text-briefing-primary font-semibold text-lg;
+  }
+  
+  .briefing-label {
+    @apply text-briefing-muted text-sm;
+  }
+  
+  .briefing-value {
+    @apply text-briefing-secondary;
+  }
+  
+  .briefing-accent {
+    @apply text-briefing-accent;
+  }
+  
+  .briefing-blocker {
+    @apply text-red-600;
+  }
+  
+  .briefing-success {
+    @apply text-green-600;
+  }
+}
