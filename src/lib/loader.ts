@@ -12,11 +12,45 @@ import type {
   ArtifactCreated,
   ContinuationContext,
 } from '../types/artifacts';
+import { 
+  OwnershipMode,
+  detectOwnershipMode,
+  getProductRepoPath,
+  getOrchestrationRepoPath,
+} from './project-link-loader';
+import { 
+  ArtifactType,
+  routeArtifact,
+} from './artifact-router';
 
 interface ProjectConfig {
   productRepoPath: string;
   asyncDevRepoPath: string;
   productId: string;
+  projectPath?: string;
+}
+
+interface RoutingContext {
+  ownershipMode: OwnershipMode;
+  productRepoPath: string;
+  orchestrationRepoPath: string;
+  productId: string;
+}
+
+function getRoutingContext(config: ProjectConfig): RoutingContext {
+  const projectPath = config.projectPath || `${config.asyncDevRepoPath}/projects/${config.productId}`;
+  const ownershipMode = detectOwnershipMode(projectPath);
+  const productRepoPath = ownershipMode === OwnershipMode.MANAGED_EXTERNAL
+    ? getProductRepoPath(projectPath)
+    : config.productRepoPath;
+  const orchestrationRepoPath = getOrchestrationRepoPath(projectPath);
+
+  return {
+    ownershipMode,
+    productRepoPath,
+    orchestrationRepoPath,
+    productId: config.productId,
+  };
 }
 
 async function loadProject(config: ProjectConfig): Promise<LoadedArtifacts> {
@@ -28,27 +62,32 @@ async function loadProject(config: ProjectConfig): Promise<LoadedArtifacts> {
     errors: [],
   };
 
-  result.productBrief = await loadProductBrief(config.productRepoPath, result.artifacts, result.errors);
-  result.featureSpecs = await loadFeatureSpecs(config.productRepoPath, result.artifacts, result.errors);
-  result.runState = await loadRunState(config.asyncDevRepoPath, config.productId, result.artifacts, result.errors);
-  result.executionResults = await loadExecutionResults(config.asyncDevRepoPath, config.productId, result.artifacts, result.errors);
-  result.decisionRequests = await loadDecisionRequests(config.asyncDevRepoPath, config.productId, result.artifacts, result.errors);
+  const routing = getRoutingContext(config);
+
+  result.productBrief = await loadProductBrief(routing, result.artifacts, result.errors);
+  result.featureSpecs = await loadFeatureSpecs(routing, result.artifacts, result.errors);
+  result.runState = await loadRunState(routing, result.artifacts, result.errors);
+  result.executionResults = await loadExecutionResults(routing, result.artifacts, result.errors);
+  result.decisionRequests = await loadDecisionRequests(routing, result.artifacts, result.errors);
 
   return result;
 }
 
 async function loadProductBrief(
-  productRepoPath: string,
+  routing: RoutingContext,
   artifacts: ArtifactReference[],
   errors: string[]
 ): Promise<ProductBrief | undefined> {
+  const routedPath = routeArtifact(ArtifactType.PRODUCT_BRIEF, routing.productRepoPath);
+  const basePath = routedPath.targetPath;
+
   const paths = [
     'docs/product-brief.md',
     'product-brief.md',
   ];
 
   for (const p of paths) {
-    const fullPath = `${productRepoPath}/${p}`;
+    const fullPath = `${basePath}/${p}`;
     try {
       const content = await readFile(fullPath);
       artifacts.push({ type: 'product_brief', path: fullPath, source: 'product', loaded: true });
@@ -58,17 +97,23 @@ async function loadProductBrief(
     }
   }
   
-  errors.push('Product brief not found');
+  if (routing.ownershipMode === OwnershipMode.MANAGED_EXTERNAL) {
+    errors.push('Product brief not found in product repo (Mode B)');
+  } else {
+    errors.push('Product brief not found');
+  }
   return undefined;
 }
 
 async function loadFeatureSpecs(
-  productRepoPath: string,
+  routing: RoutingContext,
   artifacts: ArtifactReference[],
   errors: string[]
 ): Promise<FeatureSpec[]> {
   const specs: FeatureSpec[] = [];
-  const featuresDir = `${productRepoPath}/docs/features`;
+  const routedPath = routeArtifact(ArtifactType.FEATURE_SPEC, routing.productRepoPath);
+  const basePath = routedPath.targetPath;
+  const featuresDir = `${basePath}/docs/features`;
 
   try {
     const dirs = await listDirectories(featuresDir);
@@ -83,19 +128,24 @@ async function loadFeatureSpecs(
       }
     }
   } catch {
-    errors.push('Features directory not found');
+    if (routing.ownershipMode === OwnershipMode.MANAGED_EXTERNAL) {
+      errors.push('Features directory not found in product repo (Mode B)');
+    } else {
+      errors.push('Features directory not found');
+    }
   }
 
   return specs;
 }
 
 async function loadRunState(
-  asyncDevRepoPath: string,
-  productId: string,
+  routing: RoutingContext,
   artifacts: ArtifactReference[],
   errors: string[]
 ): Promise<RunState | undefined> {
-  const path = `${asyncDevRepoPath}/projects/${productId}/runstate.md`;
+  const routedPath = routeArtifact(ArtifactType.RUNSTATE, routing.orchestrationRepoPath);
+  const basePath = routedPath.targetPath;
+  const path = `${basePath}/projects/${routing.productId}/runstate.md`;
   
   try {
     const content = await readFile(path);
@@ -103,19 +153,20 @@ async function loadRunState(
     return parseRunState(content);
   } catch {
     artifacts.push({ type: 'runstate', path, source: 'orchestration', loaded: false });
-    errors.push('RunState not found');
+    errors.push('RunState not found in orchestration repo');
     return undefined;
   }
 }
 
 async function loadExecutionResults(
-  asyncDevRepoPath: string,
-  productId: string,
+  routing: RoutingContext,
   artifacts: ArtifactReference[],
   errors: string[]
 ): Promise<ExecutionResult[]> {
   const results: ExecutionResult[] = [];
-  const resultsDir = `${asyncDevRepoPath}/projects/${productId}/execution-results`;
+  const routedPath = routeArtifact(ArtifactType.EXECUTION_RESULT, routing.orchestrationRepoPath);
+  const basePath = routedPath.targetPath;
+  const resultsDir = `${basePath}/projects/${routing.productId}/execution-results`;
 
   try {
     const files = await listFiles(resultsDir, '.md');
@@ -130,20 +181,21 @@ async function loadExecutionResults(
       }
     }
   } catch {
-    errors.push('Execution results directory not found');
+    errors.push('Execution results directory not found in orchestration repo');
   }
 
   return results.sort((a, b) => (b.execution_id || '').localeCompare(a.execution_id || ''));
 }
 
 async function loadDecisionRequests(
-  asyncDevRepoPath: string,
-  productId: string,
+  routing: RoutingContext,
   artifacts: ArtifactReference[],
   errors: string[]
 ): Promise<DecisionRequest[]> {
   const requests: DecisionRequest[] = [];
-  const requestsDir = `${asyncDevRepoPath}/projects/${productId}/.runtime/decision-requests`;
+  const routedPath = routeArtifact(ArtifactType.DECISION_REQUEST, routing.orchestrationRepoPath);
+  const basePath = routedPath.targetPath;
+  const requestsDir = `${basePath}/projects/${routing.productId}/.runtime/decision-requests`;
 
   try {
     const files = await listFiles(requestsDir, '.md');
@@ -158,7 +210,7 @@ async function loadDecisionRequests(
       }
     }
   } catch {
-    errors.push('Decision requests directory not found');
+    errors.push('Decision requests directory not found in orchestration repo');
   }
 
   return requests;
@@ -369,6 +421,7 @@ export {
   loadRunState, 
   loadExecutionResults, 
   loadDecisionRequests,
+  getRoutingContext,
 };
 
-export type { ProjectConfig };
+export type { ProjectConfig, RoutingContext };
