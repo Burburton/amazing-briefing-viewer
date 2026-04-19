@@ -1,15 +1,26 @@
 import type { BriefingSummary, StateSnapshot } from '../types/briefing';
 import { StatusBadge } from './StatusBadge';
 import { SkeletonCard, ErrorMessage, EmptyBriefing } from './StateComponents';
+import { OwnershipModeIndicator } from './OwnershipModeIndicator';
+import { OwnershipMode } from '../lib/project-link-loader';
 
 interface ExecutiveBriefProps {
   summary?: BriefingSummary;
   state?: StateSnapshot;
   isLoading?: boolean;
   error?: string;
+  ownershipMode?: OwnershipMode;
+  productRepoPath?: string | null;
 }
 
-function ExecutiveBrief({ summary, state, isLoading, error }: ExecutiveBriefProps) {
+function ExecutiveBrief({ 
+  summary, 
+  state, 
+  isLoading, 
+  error,
+  ownershipMode = OwnershipMode.SELF_HOSTED,
+  productRepoPath 
+}: ExecutiveBriefProps) {
   if (error) {
     return (
       <ErrorMessage 
@@ -36,7 +47,13 @@ function ExecutiveBrief({ summary, state, isLoading, error }: ExecutiveBriefProp
       <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-3">
         <div>
           <h1 className="text-h1">{summary.product_name}</h1>
-          <p className="text-small text-briefing-muted mt-1">{summary.product_id}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-small text-briefing-muted">{summary.product_id}</p>
+            <OwnershipModeIndicator 
+              ownershipMode={ownershipMode} 
+              productRepoPath={productRepoPath}
+            />
+          </div>
         </div>
         <StatusBadge status={summary.status} />
       </div>
