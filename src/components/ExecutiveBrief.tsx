@@ -15,43 +15,43 @@ function ExecutiveBrief({ summary, state }: ExecutiveBriefProps) {
     <div className="briefing-card">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h1 className="briefing-header text-2xl">{summary.product_name}</h1>
-          <p className="text-sm text-briefing-muted">{summary.product_id}</p>
+          <h1 className="text-h1">{summary.product_name}</h1>
+          <p className="text-small text-briefing-muted mt-1">{summary.product_id}</p>
         </div>
         <StatusBadge status={summary.status} />
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <p className="briefing-label">Current Phase</p>
-          <p className="briefing-value capitalize">{state.phase}</p>
+          <p className="text-tiny text-briefing-muted uppercase tracking-wide">Current Phase</p>
+          <p className="text-body text-briefing-secondary font-medium capitalize">{state.phase}</p>
         </div>
         <div>
-          <p className="briefing-label">Current Feature</p>
-          <p className="briefing-value">{state.feature || 'None'}</p>
+          <p className="text-tiny text-briefing-muted uppercase tracking-wide">Current Feature</p>
+          <p className="text-body text-briefing-secondary font-medium">{state.feature || 'None'}</p>
         </div>
         <div>
-          <p className="briefing-label">Last Action</p>
-          <p className="briefing-value text-sm">{state.last_action || 'No action recorded'}</p>
+          <p className="text-tiny text-briefing-muted uppercase tracking-wide">Last Action</p>
+          <p className="text-small text-briefing-secondary">{state.last_action || 'No action recorded'}</p>
         </div>
         <div>
-          <p className="briefing-label">Updated</p>
-          <p className="briefing-value text-sm">
+          <p className="text-tiny text-briefing-muted uppercase tracking-wide">Updated</p>
+          <p className="text-small text-briefing-secondary">
             {state.updated_at ? new Date(state.updated_at).toLocaleString() : 'Unknown'}
           </p>
         </div>
       </div>
 
       <div className="mb-4">
-        <p className="briefing-label mb-2">Feature Progress</p>
-        <div className="flex items-center gap-2">
-          <div className="flex-1 bg-gray-200 rounded-full h-2">
+        <p className="text-tiny text-briefing-muted uppercase tracking-wide mb-2">Feature Progress</p>
+        <div className="flex items-center gap-3">
+          <div className="flex-1 bg-gray-200 rounded-full h-2.5">
             <div 
-              className="bg-briefing-accent h-2 rounded-full" 
+              className="bg-briefing-accent h-2.5 rounded-full transition-all" 
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="text-sm text-briefing-muted">
+          <span className="text-small text-briefing-secondary font-medium tabular-nums">
             {summary.completed_features}/{summary.total_features}
           </span>
         </div>
@@ -59,17 +59,17 @@ function ExecutiveBrief({ summary, state }: ExecutiveBriefProps) {
 
       <div className="flex gap-2">
         {summary.has_blockers && (
-          <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">
+          <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-tiny font-medium">
             Blockers
           </span>
         )}
         {summary.has_decisions_needed && (
-          <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+          <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-tiny font-medium">
             Decision Needed
           </span>
         )}
         {!summary.has_blockers && !summary.has_decisions_needed && (
-          <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
+          <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-tiny font-medium">
             No Issues
           </span>
         )}

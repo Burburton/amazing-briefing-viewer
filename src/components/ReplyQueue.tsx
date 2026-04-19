@@ -15,16 +15,16 @@ function ReplyQueue({ pendingDecisions }: ReplyQueueProps) {
             </svg>
           </div>
           <div>
-            <h3 className="briefing-header text-green-700">No Pending Decisions</h3>
-            <p className="text-sm text-green-600">All decision requests have been resolved</p>
+            <h3 className="text-h3 text-green-700">No Pending Decisions</h3>
+            <p className="text-small text-green-600">All decision requests have been resolved</p>
           </div>
         </div>
       </div>
     );
   }
 
-  const urgentThreshold = 30; // minutes
-  const oldThreshold = 120; // 2 hours
+  const urgentThreshold = 30;
+  const oldThreshold = 120;
 
   return (
     <div className="briefing-card border-red-200 bg-red-50">
@@ -35,8 +35,8 @@ function ReplyQueue({ pendingDecisions }: ReplyQueueProps) {
           </svg>
         </div>
         <div>
-          <h3 className="briefing-header text-red-700">Reply Required</h3>
-          <p className="text-sm text-red-600">{pendingDecisions.length} decision(s) awaiting your response</p>
+          <h3 className="text-h3 text-red-700">Reply Required</h3>
+          <p className="text-small text-red-600">{pendingDecisions.length} decision(s) awaiting your response</p>
         </div>
       </div>
 
@@ -56,19 +56,19 @@ function ReplyQueue({ pendingDecisions }: ReplyQueueProps) {
               'border-yellow-200 bg-yellow-50'
             }`}>
               <div className="flex items-center justify-between gap-2">
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
+                <span className={`px-2 py-1 rounded text-tiny font-medium ${
                   isUrgent ? 'bg-red-200 text-red-800' :
                   isOld ? 'bg-orange-200 text-orange-800' :
                   'bg-yellow-200 text-yellow-800'
                 }`}>
                   {isUrgent ? 'URGENT' : isOld ? 'OLD' : 'PENDING'}
                 </span>
-                <span className="text-xs text-briefing-muted">
+                <span className="text-tiny text-briefing-muted">
                   {ageMinutes} min ago
                 </span>
               </div>
 
-              <p className="mt-2 text-sm text-briefing-secondary">
+              <p className="mt-2 text-small text-briefing-secondary font-medium">
                 {decision.question.slice(0, 80)}
                 {decision.question.length > 80 && '...'}
               </p>
@@ -84,7 +84,7 @@ function ReplyQueue({ pendingDecisions }: ReplyQueueProps) {
                 ))}
               </div>
 
-              <div className="mt-3 text-xs text-briefing-muted">
+              <div className="mt-3 text-tiny text-briefing-muted">
                 <p>Reply format: DECISION {decision.recommendation || 'A'}</p>
                 <p className="mt-1">Or reply via email to: asyncdev-inbox@eawiloteno.resend.app</p>
               </div>
@@ -105,7 +105,7 @@ interface ReplyActionButtonProps {
 function ReplyActionButton({ optionId, label, recommended }: ReplyActionButtonProps) {
   return (
     <button
-      className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+      className={`px-3 py-2 rounded text-small font-medium transition-colors focus-ring ${
         recommended 
           ? 'bg-briefing-accent text-white hover:bg-blue-700' 
           : 'bg-white border border-gray-200 text-briefing-secondary hover:bg-gray-50'
@@ -116,7 +116,7 @@ function ReplyActionButton({ optionId, label, recommended }: ReplyActionButtonPr
         <span className="font-bold">{optionId}:</span>
         <span>{label}</span>
         {recommended && (
-          <span className="text-xs">★</span>
+          <span className="text-tiny">★</span>
         )}
       </span>
     </button>

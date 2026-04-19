@@ -8,8 +8,8 @@ function EvidencePanel({ evidence }: EvidencePanelProps) {
   if (evidence.length === 0) {
     return (
       <div className="briefing-card">
-        <h3 className="briefing-header">Evidence</h3>
-        <p className="text-sm text-briefing-muted">No artifacts loaded</p>
+        <h3 className="text-h3">Evidence</h3>
+        <p className="text-small text-briefing-muted">No artifacts loaded</p>
       </div>
     );
   }
@@ -19,11 +19,11 @@ function EvidencePanel({ evidence }: EvidencePanelProps) {
 
   return (
     <div className="briefing-card">
-      <h3 className="briefing-header">Evidence Sources</h3>
+      <h3 className="text-h3">Evidence Sources</h3>
       
       {productArtifacts.length > 0 && (
         <div className="mt-3">
-          <p className="text-xs text-briefing-muted mb-2">Product Repo</p>
+          <p className="text-tiny text-briefing-muted uppercase tracking-wide mb-2">Product Repo</p>
           <ul className="space-y-1">
             {productArtifacts.map((artifact, i) => (
               <ArtifactLink key={i} artifact={artifact} />
@@ -34,7 +34,7 @@ function EvidencePanel({ evidence }: EvidencePanelProps) {
 
       {orchestrationArtifacts.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs text-briefing-muted mb-2">Orchestration (async-dev)</p>
+          <p className="text-tiny text-briefing-muted uppercase tracking-wide mb-2">Orchestration (async-dev)</p>
           <ul className="space-y-1">
             {orchestrationArtifacts.map((artifact, i) => (
               <ArtifactLink key={i} artifact={artifact} />
@@ -63,7 +63,7 @@ function ArtifactLink({ artifact }: ArtifactLinkProps) {
     <li>
       <a 
         href={artifact.path}
-        className="text-sm text-briefing-accent hover:underline flex items-center gap-2"
+        className="text-small text-briefing-accent hover:underline flex items-center gap-2 focus-ring rounded"
         title={artifact.path}
       >
         <span className="w-20 text-briefing-muted">{typeLabels[artifact.type] || artifact.type}</span>

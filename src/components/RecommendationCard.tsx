@@ -11,7 +11,7 @@ function RecommendationCard({ recommendation }: RecommendationCardProps) {
   return (
     <div className={`briefing-card ${isActionRequired ? 'border-yellow-300 bg-yellow-50' : 'border-green-200 bg-green-50'}`}>
       <div className="flex items-start gap-3">
-        <div className={`mt-1 ${isActionRequired ? 'text-yellow-500' : 'text-green-500'}`}>
+        <div className={`mt-0.5 ${isActionRequired ? 'text-yellow-500' : 'text-green-500'}`}>
           {isActionRequired ? (
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -23,11 +23,11 @@ function RecommendationCard({ recommendation }: RecommendationCardProps) {
           )}
         </div>
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className={`briefing-header ${isActionRequired ? 'text-yellow-700' : 'text-green-700'}`}>
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className={`text-h3 ${isActionRequired ? 'text-yellow-700' : 'text-green-700'}`}>
               {isActionRequired ? 'Action Required' : 'Recommended Next Step'}
             </h3>
-            <span className={`px-2 py-0.5 rounded text-xs ${
+            <span className={`px-2 py-0.5 rounded text-tiny font-medium ${
               urgencyLevel === 'high' ? 'bg-red-100 text-red-700' :
               'bg-green-100 text-green-700'
             }`}>
@@ -35,21 +35,21 @@ function RecommendationCard({ recommendation }: RecommendationCardProps) {
             </span>
           </div>
           
-          <p className="mt-1 text-briefing-secondary font-medium">{recommendation.action}</p>
+          <p className="text-body text-briefing-secondary font-medium">{recommendation.action}</p>
           
           {recommendation.reason && (
-            <div className="mt-2">
-              <p className="text-xs text-briefing-muted mb-1">Why:</p>
-              <p className="text-sm text-briefing-secondary bg-white p-2 rounded">{recommendation.reason}</p>
+            <div className="mt-3">
+              <p className="text-tiny text-briefing-muted uppercase tracking-wide mb-1">Why</p>
+              <p className="text-small text-briefing-secondary bg-white p-2 rounded">{recommendation.reason}</p>
             </div>
           )}
           
           {recommendation.decision_options && (
             <div className="mt-3">
-              <p className="text-xs text-briefing-muted mb-2">Options:</p>
+              <p className="text-tiny text-briefing-muted uppercase tracking-wide mb-2">Options</p>
               <div className="flex flex-wrap gap-2">
                 {recommendation.decision_options.map(opt => (
-                  <button key={opt} className="px-3 py-1 bg-white rounded border hover:bg-briefing-accent hover:text-white transition-colors text-sm">
+                  <button key={opt} className="px-3 py-1.5 bg-white rounded border hover:bg-briefing-accent hover:text-white transition-colors text-small focus-ring">
                     {opt}
                   </button>
                 ))}
@@ -59,7 +59,7 @@ function RecommendationCard({ recommendation }: RecommendationCardProps) {
           
           <div className="mt-3 pt-2 border-t border-gray-200">
             <div className="flex items-center gap-2">
-              <span className={`text-xs ${
+              <span className={`text-tiny ${
                 recommendation.autonomous ? 'text-green-600' : 'text-yellow-600'
               }`}>
                 {recommendation.autonomous ? '● Can proceed autonomously' : '● Requires human input'}
@@ -67,7 +67,7 @@ function RecommendationCard({ recommendation }: RecommendationCardProps) {
             </div>
             
             {!recommendation.autonomous && (
-              <p className="text-xs text-briefing-muted mt-1">
+              <p className="text-tiny text-briefing-muted mt-1">
                 Reply via email or CLI: asyncdev email-decision reply
               </p>
             )}
