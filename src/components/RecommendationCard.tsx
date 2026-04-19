@@ -49,7 +49,7 @@ function RecommendationCard({ recommendation }: RecommendationCardProps) {
               <p className="text-tiny text-briefing-muted uppercase tracking-wide mb-2">Options</p>
               <div className="flex flex-wrap gap-2">
                 {recommendation.decision_options.map(opt => (
-                  <button key={opt} className="px-3 py-1.5 bg-white rounded border hover:bg-briefing-accent hover:text-white transition-colors text-small focus-ring">
+                  <button key={opt} className="px-2 sm:px-3 py-1.5 bg-white rounded border hover:bg-briefing-accent hover:text-white transition-colors text-small focus-ring">
                     {opt}
                   </button>
                 ))}

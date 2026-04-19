@@ -73,7 +73,7 @@ function ReplyQueue({ pendingDecisions }: ReplyQueueProps) {
                 {decision.question.length > 80 && '...'}
               </p>
 
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex flex-wrap gap-2">
                 {decision.options?.slice(0, 4).map(opt => (
                   <ReplyActionButton
                     key={opt.id}

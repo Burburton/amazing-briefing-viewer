@@ -13,7 +13,7 @@ function ExecutiveBrief({ summary, state }: ExecutiveBriefProps) {
 
   return (
     <div className="briefing-card">
-      <div className="flex items-start justify-between mb-4">
+      <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-3">
         <div>
           <h1 className="text-h1">{summary.product_name}</h1>
           <p className="text-small text-briefing-muted mt-1">{summary.product_id}</p>
@@ -21,7 +21,7 @@ function ExecutiveBrief({ summary, state }: ExecutiveBriefProps) {
         <StatusBadge status={summary.status} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
           <p className="text-tiny text-briefing-muted uppercase tracking-wide">Current Phase</p>
           <p className="text-body text-briefing-secondary font-medium capitalize">{state.phase}</p>

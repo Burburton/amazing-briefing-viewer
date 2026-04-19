@@ -63,10 +63,10 @@ function ArtifactLink({ artifact }: ArtifactLinkProps) {
     <li>
       <a 
         href={artifact.path}
-        className="text-small text-briefing-accent hover:underline flex items-center gap-2 focus-ring rounded"
+        className="text-small text-briefing-accent hover:underline flex items-center gap-1 sm:gap-2 focus-ring rounded"
         title={artifact.path}
       >
-        <span className="w-20 text-briefing-muted">{typeLabels[artifact.type] || artifact.type}</span>
+        <span className="w-14 sm:w-20 text-briefing-muted text-tiny">{typeLabels[artifact.type] || artifact.type}</span>
         <span className="truncate">{artifact.path.split('/').pop()}</span>
       </a>
     </li>

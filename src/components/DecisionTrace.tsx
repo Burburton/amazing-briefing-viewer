@@ -104,7 +104,7 @@ function DecisionRequestCard({ decision }: DecisionRequestCardProps) {
             )}
           </div>
         </div>
-        <div className="text-right">
+        <div className="text-left sm:text-right mt-2 sm:mt-0">
           <p className="text-tiny text-briefing-muted">{decision.decision_request_id}</p>
           {decision.recommendation && (
             <p className="text-tiny text-briefing-accent">→ {decision.recommendation}</p>

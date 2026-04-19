@@ -95,7 +95,7 @@ export function LayoutCard({ children, title, priority = 'info', className = '' 
   return (
     <div className={`briefing-card ${priorityBorder[priority]} ${className}`}>
       {title && (
-        <h3 className="briefing-header flex items-center gap-2">
+        <h3 className="briefing-header flex flex-wrap items-center gap-2">
           {title}
           {priority === 'critical' && (
             <span className="px-2 py-0.5 rounded text-xs bg-red-100 text-red-700">
