@@ -116,8 +116,6 @@ function EmptyState({
   );
 }
 
-// Preset Empty States
-
 function EmptyBriefing() {
   return (
     <EmptyState
