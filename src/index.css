@@ -4,13 +4,33 @@
 
 @layer base {
   body {
-    @apply font-briefing bg-briefing-surface text-briefing-secondary;
+    @apply font-briefing bg-briefing-surface text-briefing-secondary antialiased;
+  }
+  
+  h1 {
+    @apply text-h1 text-briefing-primary;
+  }
+  
+  h2 {
+    @apply text-h2 text-briefing-primary;
+  }
+  
+  h3 {
+    @apply text-h3 text-briefing-secondary;
+  }
+  
+  h4 {
+    @apply text-h4 text-briefing-secondary;
+  }
+  
+  p {
+    @apply text-body text-briefing-secondary;
   }
 }
 
 @layer components {
   .briefing-card {
-    @apply bg-white rounded-lg border border-briefing-border p-4 shadow-sm;
+    @apply bg-white rounded-lg border border-briefing-border p-4 shadow-briefing;
   }
   
   .briefing-header {
@@ -18,7 +38,7 @@
   }
   
   .briefing-label {
-    @apply text-briefing-muted text-sm;
+    @apply text-briefing-muted text-small;
   }
   
   .briefing-value {
@@ -35,5 +55,47 @@
   
   .briefing-success {
     @apply text-green-600;
+  }
+  
+  .briefing-loading {
+    @apply animate-pulse bg-gray-100 rounded;
+  }
+  
+  .briefing-skeleton {
+    @apply briefing-loading h-4 w-full;
+  }
+  
+  .briefing-skeleton-text {
+    @apply briefing-loading h-3 w-3/4;
+  }
+  
+  .briefing-error {
+    @apply bg-red-50 border border-red-200 rounded-lg p-4 text-red-700;
+  }
+  
+  .briefing-empty {
+    @apply bg-gray-50 border border-gray-200 rounded-lg p-4 text-briefing-muted text-center;
+  }
+  
+  .briefing-empty-action {
+    @apply mt-2 text-briefing-accent text-small cursor-pointer hover:underline;
+  }
+}
+
+@layer utilities {
+  .text-critical {
+    @apply text-red-700 font-semibold;
+  }
+  
+  .text-important {
+    @apply text-blue-700;
+  }
+  
+  .text-info {
+    @apply text-briefing-muted;
+  }
+  
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-briefing-accent focus:ring-offset-2;
   }
 }
