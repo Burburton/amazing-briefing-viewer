@@ -1,26 +1,28 @@
 import type { DecisionRequest } from '../types/artifacts';
+import { SkeletonCard, ErrorMessage, EmptyDecisions } from './StateComponents';
 
 interface ReplyQueueProps {
   pendingDecisions: DecisionRequest[];
+  isLoading?: boolean;
+  error?: string;
 }
 
-function ReplyQueue({ pendingDecisions }: ReplyQueueProps) {
-  if (pendingDecisions.length === 0) {
+function ReplyQueue({ pendingDecisions, isLoading, error }: ReplyQueueProps) {
+  if (error) {
     return (
-      <div className="briefing-card border-green-200 bg-green-50">
-        <div className="flex items-center gap-3">
-          <div className="text-green-500">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 001.414 1.414l2-2a1 1 0 000-1.414l-4-4a1 1 0 00-1.414 0z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-h3 text-green-700">No Pending Decisions</h3>
-            <p className="text-small text-green-600">All decision requests have been resolved</p>
-          </div>
-        </div>
-      </div>
+      <ErrorMessage 
+        message="Failed to load decision queue" 
+        details={error}
+      />
     );
+  }
+
+  if (isLoading) {
+    return <SkeletonCard />;
+  }
+
+  if (pendingDecisions.length === 0) {
+    return <EmptyDecisions />;
   }
 
   const urgentThreshold = 30;

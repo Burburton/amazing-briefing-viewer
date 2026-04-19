@@ -1,17 +1,28 @@
 import type { EvidenceReference } from '../types/briefing';
+import { SkeletonCard, ErrorMessage, EmptyEvidence } from './StateComponents';
 
 interface EvidencePanelProps {
   evidence: EvidenceReference[];
+  isLoading?: boolean;
+  error?: string;
 }
 
-function EvidencePanel({ evidence }: EvidencePanelProps) {
-  if (evidence.length === 0) {
+function EvidencePanel({ evidence, isLoading, error }: EvidencePanelProps) {
+  if (error) {
     return (
-      <div className="briefing-card">
-        <h3 className="text-h3">Evidence</h3>
-        <p className="text-small text-briefing-muted">No artifacts loaded</p>
-      </div>
+      <ErrorMessage 
+        message="Failed to load evidence" 
+        details={error}
+      />
     );
+  }
+
+  if (isLoading) {
+    return <SkeletonCard />;
+  }
+
+  if (evidence.length === 0) {
+    return <EmptyEvidence />;
   }
 
   const productArtifacts = evidence.filter(e => e.source === 'product');

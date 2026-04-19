@@ -1,12 +1,32 @@
 import type { BriefingSummary, StateSnapshot } from '../types/briefing';
 import { StatusBadge } from './StatusBadge';
+import { SkeletonCard, ErrorMessage, EmptyBriefing } from './StateComponents';
 
 interface ExecutiveBriefProps {
-  summary: BriefingSummary;
-  state: StateSnapshot;
+  summary?: BriefingSummary;
+  state?: StateSnapshot;
+  isLoading?: boolean;
+  error?: string;
 }
 
-function ExecutiveBrief({ summary, state }: ExecutiveBriefProps) {
+function ExecutiveBrief({ summary, state, isLoading, error }: ExecutiveBriefProps) {
+  if (error) {
+    return (
+      <ErrorMessage 
+        message="Failed to load briefing" 
+        details={error}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return <SkeletonCard />;
+  }
+
+  if (!summary || !state) {
+    return <EmptyBriefing />;
+  }
+
   const progressPercent = summary.total_features > 0 
     ? Math.round((summary.completed_features / summary.total_features) * 100)
     : 0;
