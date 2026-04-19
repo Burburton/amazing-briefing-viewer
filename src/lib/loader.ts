@@ -35,6 +35,16 @@ interface RoutingContext {
   productRepoPath: string;
   orchestrationRepoPath: string;
   productId: string;
+  productRepoAccessible?: boolean;
+}
+
+async function validateProductRepoAccess(path: string): Promise<boolean> {
+  try {
+    await readFile(`${path}/package.json`);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function getRoutingContext(config: ProjectConfig): RoutingContext {
@@ -50,6 +60,7 @@ function getRoutingContext(config: ProjectConfig): RoutingContext {
     productRepoPath,
     orchestrationRepoPath,
     productId: config.productId,
+    productRepoAccessible: undefined,
   };
 }
 
@@ -63,6 +74,14 @@ async function loadProject(config: ProjectConfig): Promise<LoadedArtifacts> {
   };
 
   const routing = getRoutingContext(config);
+
+  if (routing.ownershipMode === OwnershipMode.MANAGED_EXTERNAL) {
+    routing.productRepoAccessible = await validateProductRepoAccess(routing.productRepoPath);
+    if (!routing.productRepoAccessible) {
+      result.errors.push(`Product repo not accessible: ${routing.productRepoPath}`);
+      result.errors.push('Mode B requires accessible product repo. Check project-link.yaml product_repo path.');
+    }
+  }
 
   result.productBrief = await loadProductBrief(routing, result.artifacts, result.errors);
   result.featureSpecs = await loadFeatureSpecs(routing, result.artifacts, result.errors);
